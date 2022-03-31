@@ -6,8 +6,8 @@ var cors = require("cors");
 const fs = require("fs");
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 // app.get('/',(req,res)=>{
@@ -58,7 +58,7 @@ app.post('/newbook',(req,res)=>{
         authors:req.body.authors,
         description:req.body.description
     }
-
+  
     const response=jsonTOcsvFile(book, "books.csv", false);
 
     res.json(response)
@@ -82,7 +82,7 @@ app.post('/newauthor',(req,res)=>{
         firstname:req.body.firstname,
         lastname:req.body.lastname
     }
-
+    // console.log(req.body)
     const response=jsonTOcsvFile(author, "authors.csv", false);
 
     res.json(response)
@@ -96,12 +96,9 @@ app.post("/download/:file", async (req, res) => {
   var outputFilePath = `./${Date.now()}${fil}.zip`;
   zip.addLocalFile(`./${fil}.csv`);
   fs.writeFileSync(outputFilePath, zip.toBuffer());
-  res.download(outputFilePath, (err) => {
-    if (err){
-      res.status(500).json({error: "something went wrong!"});
-    } 
-    fs.unlink(outputFilePath, function (err) {
-      res.status(500).json({error: "something went wrong!"})
+  res.download(outputFilePath, () => {
+    fs.unlink(outputFilePath,()=>{
+      console.log("file deleted")
     });
   });
 });
