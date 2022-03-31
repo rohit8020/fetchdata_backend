@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        table{
+            border: 2px solid grey;
+            width: 100%;
+        }
+        tr{
+            border: 2px solid grey;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+        }
+        input{
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn{
+            width: 30%;
+            align-self: center;
+            background: rgb(66, 165, 53);
+            color: white;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">You can Add Author in csv file and download it</h1>
+    <form action="/newauthor" method="POST">
+        <label for="email">Email: 
+            <input type="email" name="email">
+        </label>
+        <label for="firstname">First Name: 
+            <input type="text" name="firstname">
+        </label>
+        <label for="lastname">Last Name: 
+            <input type="text" name="lastname">
+        </label>
+        <input class="btn" type="submit" value="Submit">
+    </form>
+    <table>
+        <tr><th>First Name</th><th>Last Name</th><th>Email</th></tr>
+        <% authors.forEach(author=>{%>
+            <tr>
+                <td><%= author.firstname %></td>
+                <td><%= author.lastname %></td>
+                <td><%= author.email %></td>
+            </tr>
+        <% }) %>
+    </table>
+    
+    <button class="btn" onclick="func('authors')" >Download <%= page %></button>
+    <script>
+        function func(file){
+            fetch(`${window.location.origin}/download/${file}`,{
+            method : 'POST'})
+            .then((res)=>res.blob().then((blob)=>{
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'filename.zip'); 
+                document.body.appendChild(link);
+                link.click();
+            }).catch(()=>{
+                console.log("error")
+            })).catch(()=>{
+                console.log("error")
+            })
+        }
+    </script>
+</body>
+</html>
